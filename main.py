@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import dolar_api
 
 
@@ -19,6 +19,8 @@ def dolar_info():
     label_bcra.config(text=f'Dolar BCRA\n'
                            f'Compra: {dolar_api.dolar_bcra.info_buy()}\n'
                            f'Venta: {dolar_api.dolar_bcra.info_sell()}')
+
+    messagebox.showinfo("Actualización completada", "La información del dólar ha sido actualizada correctamente.")
 
 
 # Creamos la ventana y le damos caracteristicas
@@ -49,7 +51,7 @@ main_window.columnconfigure(2, weight=2)
 label_oficial = ttk.Label(main_window,
                           text=f'Dolar Oficial\n'
                                f'Compra: {dolar_api.dolar_oficial.info_buy()}\n'
-                               f'Venta: {dolar_api.dolar_oficial.info_sell()}',
+                               f'Venta: {dolar_api.dolar_oficial.info_sell()} ',
                           font=("Helvetica", 14),
                           foreground='black',
                           background='gray62',
@@ -61,7 +63,7 @@ label_oficial.grid(column=0, row=1)
 label_blue = ttk.Label(main_window,
                        text=f'Dolar Blue\n'
                             f'Compra: {dolar_api.dolar_blue.info_buy()}\n'
-                            f'Venta: {dolar_api.dolar_blue.info_sell()}',
+                            f'Venta: {dolar_api.dolar_blue.info_sell()} ',
                        font=("Helvetica", 14),
                        foreground='black',
                        background='gray62',
@@ -73,7 +75,7 @@ label_blue.grid(column=1, row=1)
 label_bcra = ttk.Label(main_window,
                        text=f'Dolar BCRA\n'
                             f'Compra: {dolar_api.dolar_bcra.info_buy()}\n'
-                            f'Venta: {dolar_api.dolar_bcra.info_sell()}',
+                            f'Venta: {dolar_api.dolar_bcra.info_sell()} ',
                        font=("Helvetica", 14),
                        foreground='black',
                        background='gray62',
