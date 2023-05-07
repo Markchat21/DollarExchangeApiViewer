@@ -54,7 +54,7 @@ label_title = ttk.Label(main_window,
                         background='gray62',
                         wraplength=300,
                         justify='center')
-label_title.grid(column=1, row=0, sticky='NWSE')
+label_title.grid(column=1, row=0, sticky='NS')
 
 # Configurar el grid
 main_window.rowconfigure(1, weight=2)
