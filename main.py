@@ -2,25 +2,42 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import dolar_api
 
+# Creamos una instancia de la clase DollarExchangeTypes
+dolar_exchange_types = dolar_api.DollarExchangeTypes()
+
 
 # Funcion del evento
-def dolar_info():
-    # Llamamos a la API cada vez que que demos click para actulizar los valores
-    dolar_api.DolarExchangeAPI().call()
+def dolar_update_info():
+    # LLamamos al metodo call para traer la api
+    dolar_exchange_types.call()
 
-    label_oficial.config(text=f'Dolar Oficial\n'
-                              f'Compra: {dolar_api.dolar_oficial.info_buy()}\n'
-                              f'Venta: {dolar_api.dolar_oficial.info_sell()}')
+    if dolar_exchange_types.status_message is not None:
+        # Si ocurre una excpecion mostramos el status
+        label_oficial.config(text=dolar_exchange_types.status_message)
+        label_blue.config(text=dolar_exchange_types.status_message)
+        label_bcra.config(text=dolar_exchange_types.status_message)
 
-    label_blue.config(text=f'Dolar Blue\n'
-                           f'Compra: {dolar_api.dolar_blue.info_buy()}\n'
-                           f'Venta: {dolar_api.dolar_blue.info_sell()}')
+        # Mostramos un mensaje de error
+        messagebox.showerror("Actulización no completada", "No se puedo actulizar la información")
 
-    label_bcra.config(text=f'Dolar BCRA\n'
-                           f'Compra: {dolar_api.dolar_bcra.info_buy()}\n'
-                           f'Venta: {dolar_api.dolar_bcra.info_sell()}')
+    else:
+        # Si la llamada es exitosa, llamamos a los metodos de cada tipo de dolar y actualizamos
+        dolar_exchange_types.dollar_oficial()
+        label_oficial.config(text=f'Dolar Oficial\n'
+                                  f'Compra: {dolar_exchange_types.info_buy()}\n'
+                                  f'Venta: {dolar_exchange_types.info_sell()}')
 
-    messagebox.showinfo("Actualización completada", "La información del dólar ha sido actualizada correctamente.")
+        dolar_exchange_types.dollar_blue()
+        label_blue.config(text=f'Dolar Blue\n'
+                               f'Compra: {dolar_exchange_types.info_buy()}\n'
+                               f'Venta: {dolar_exchange_types.info_sell()}')
+        dolar_exchange_types.dollar_bcra()
+        label_bcra.config(text=f'Dolar BCRA\n'
+                               f'Compra: {dolar_exchange_types.info_buy()}\n'
+                               f'Venta: {dolar_exchange_types.info_sell()}')
+
+        # Mostramos un mensaje de exito
+        messagebox.showinfo("Actualización completada", "La información del dólar ha sido actualizada correctamente.")
 
 
 # Creamos la ventana y le damos caracteristicas
@@ -29,15 +46,15 @@ main_window.geometry('600x400')
 main_window.title('Dolar APP')
 main_window.config(background='gray')
 
-# Creamos una etiqueta de bienvenida
-label_welcome = ttk.Label(main_window,
-                          text="Cotización del dolar en tiempo real",
-                          font=("Helvetica", 14),
-                          foreground='black',
-                          background='gray62',
-                          wraplength=300,
-                          justify='center')
-label_welcome.grid(column=1, row=0, sticky='NWSE')
+# Creamos una etiqueta de titulo
+label_title = ttk.Label(main_window,
+                        text="Cotización del dolar en tiempo real",
+                        font=("Helvetica", 14),
+                        foreground='black',
+                        background='gray62',
+                        wraplength=300,
+                        justify='center')
+label_title.grid(column=1, row=0, sticky='NWSE')
 
 # Configurar el grid
 main_window.rowconfigure(1, weight=2)
@@ -50,8 +67,8 @@ main_window.columnconfigure(2, weight=2)
 # label para el dolar oficial
 label_oficial = ttk.Label(main_window,
                           text=f'Dolar Oficial\n'
-                               f'Compra: {dolar_api.dolar_oficial.info_buy()}\n'
-                               f'Venta: {dolar_api.dolar_oficial.info_sell()} ',
+                               f'Compra: ---,---\n'
+                               f'Venta: ---,---',
                           font=("Helvetica", 14),
                           foreground='black',
                           background='gray62',
@@ -62,8 +79,8 @@ label_oficial.grid(column=0, row=1)
 # label para el dolar blue
 label_blue = ttk.Label(main_window,
                        text=f'Dolar Blue\n'
-                            f'Compra: {dolar_api.dolar_blue.info_buy()}\n'
-                            f'Venta: {dolar_api.dolar_blue.info_sell()} ',
+                            f'Compra: ---,---\n'
+                            f'Venta: ---,---',
                        font=("Helvetica", 14),
                        foreground='black',
                        background='gray62',
@@ -74,8 +91,8 @@ label_blue.grid(column=1, row=1)
 # label para el dolar bcra
 label_bcra = ttk.Label(main_window,
                        text=f'Dolar BCRA\n'
-                            f'Compra: {dolar_api.dolar_bcra.info_buy()}\n'
-                            f'Venta: {dolar_api.dolar_bcra.info_sell()} ',
+                            f'Compra: ---,---\n'
+                            f'Venta: ---,---',
                        font=("Helvetica", 14),
                        foreground='black',
                        background='gray62',
@@ -84,7 +101,8 @@ label_bcra = ttk.Label(main_window,
 label_bcra.grid(column=2, row=1)
 
 # Definimos el botón para actualizar la cotización
-refresh_button = ttk.Button(main_window, text='Actualizar', command=dolar_info)
+
+refresh_button = ttk.Button(main_window, text='Actualizar', command=dolar_update_info)
 refresh_button.grid(row=2, column=1, sticky='NSWE', padx=20, pady=50)
 
 # Le damos estilo al botón
